@@ -1,20 +1,19 @@
-package ru.deelter.moreWGFlags;
+package ru.deelter.morewgflags.link;
 
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
-import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.format.Style;
-import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;
+import ru.deelter.chat.processors.AbstractChatProcessor;
+import ru.deelter.chat.utils.ChatData;
+import ru.deelter.morewgflags.utils.RegionUtils;
+import ru.deelter.morewgflags.utils.WGFlags;
 
 public class WGChatProcessor extends AbstractChatProcessor {
 
-	@Override
-	public int getPriority() {
-		return 10;
+	public WGChatProcessor(int priority) {
+		super(priority);
 	}
 
 	@Override
@@ -22,15 +21,15 @@ public class WGChatProcessor extends AbstractChatProcessor {
 		ApplicableRegionSet regionSet = RegionUtils.getRegionsInLocation(chatData.getLocation());
 		if (regionSet == null) return;
 
-		var regionChatRadius = regionSet.queryValue(null, DFlags.CHAT_RADIUS);
-		var regionChatFormat = regionSet.queryValue(null, DFlags.CHAT_FORMAT);
-		var regionZoneName = regionSet.queryValue(null, DFlags.CHAT_ZONE_NAME);
+		var regionChatRadius = regionSet.queryValue(null, WGFlags.CHAT_RADIUS);
+		var regionChatFormat = regionSet.queryValue(null, WGFlags.CHAT_FORMAT);
+		var regionZoneName = regionSet.queryValue(null, WGFlags.CHAT_ZONE_NAME);
 
 		if (regionChatRadius != null) {
 			chatData.setRadius(regionChatRadius);
 		}
 		if (regionZoneName != null && !regionZoneName.isBlank()) {
-			Component zoneName = MiniMessage.miniMessage().deserialize(regionZoneName).hoverEvent(createDebugHover(chatData));
+			Component zoneName = MiniMessage.miniMessage().deserialize(regionZoneName);
 			Component prefix = chatData.getPrefix();
 			if (prefix != null) {
 				prefix = Component.join(JoinConfiguration.separator(Component.text(" ")), zoneName, prefix);
@@ -42,20 +41,8 @@ public class WGChatProcessor extends AbstractChatProcessor {
 		}
 	}
 
-	private @NotNull HoverEvent<Component> createDebugHover(@NotNull ChatData data) {
-		Location location = data.getLocation();
-		return HoverEvent.showText(
-				Component.text(String.format("XYZ: %s, %s, %s", location.getBlockX(), location.getBlockY(), location.getBlockZ()))
-						.append(Component.newline())
-						.append(Component.translatable("com.settings.chat.radius").append(Component.text(": " + data.getRadius())))
-						.style(Style.style()
-								.color(TextColor.color(168, 155, 138))
-								.build())
-		);
-	}
-
 	@Override
 	public boolean canProcess(@NotNull ChatData chatData) {
-		return DFlags.CHAT_FLAGS_ENABLED;
+		return WGFlags.CHAT_FLAGS_ENABLED;
 	}
 }

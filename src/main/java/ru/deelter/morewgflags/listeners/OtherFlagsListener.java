@@ -1,4 +1,4 @@
-package ru.deelter.moreWGFlags;
+package ru.deelter.morewgflags.listeners;
 
 import com.sk89q.worldguard.LocalPlayer;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
@@ -8,19 +8,18 @@ import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.projectiles.ProjectileSource;
 import org.jetbrains.annotations.NotNull;
-import ru.deelter.wgflags.data.DFlags;
-import ru.deelter.wgflags.utils.RegionUtils;
-import ru.xikki.libraries.paper.annotations.Listener;
+import ru.deelter.morewgflags.utils.WGFlags;
+import ru.deelter.morewgflags.utils.RegionUtils;
 
 import java.util.Arrays;
 
-@Listener
-public class OtherFlagsListener {
+public class OtherFlagsListener implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onKeepInventory(@NotNull PlayerDeathEvent event) {
@@ -31,7 +30,7 @@ public class OtherFlagsListener {
 		if (regionSet == null) return;
 
 		LocalPlayer localPlayer = WorldGuardPlugin.inst().wrapPlayer(player);
-		StateFlag.State state = regionSet.queryState(localPlayer, DFlags.KEEP_INVENTORY);
+		StateFlag.State state = regionSet.queryState(localPlayer, WGFlags.KEEP_INVENTORY);
 		if (state == null) return;
 		if (state == StateFlag.State.DENY) {
 			event.setKeepInventory(false);
@@ -58,8 +57,7 @@ public class OtherFlagsListener {
 		Player damager = null;
 		if (event.getDamager() instanceof Player player) {
 			damager = player;
-		}
-		else if (event.getDamager() instanceof AbstractArrow arrow) {
+		} else if (event.getDamager() instanceof AbstractArrow arrow) {
 			ProjectileSource projectileSource = arrow.getShooter();
 			damager = projectileSource instanceof Player sourcePlayer ? sourcePlayer : null;
 		}
@@ -69,7 +67,7 @@ public class OtherFlagsListener {
 		if (regionSet == null) return;
 
 		LocalPlayer localPlayer = WorldGuardPlugin.inst().wrapPlayer(target);
-		var damage = regionSet.queryValue(localPlayer, DFlags.PVP_DAMAGE);
+		var damage = regionSet.queryValue(localPlayer, WGFlags.PVP_DAMAGE);
 		if (damage == null) return;
 
 		event.setDamage(damage);
@@ -85,7 +83,7 @@ public class OtherFlagsListener {
 		if (regionSet == null) return;
 
 		LocalPlayer localPlayer = WorldGuardPlugin.inst().wrapPlayer(player);
-		Integer minFoodLevel = regionSet.queryValue(localPlayer, DFlags.MIN_FOOD_LEVEL);
+		Integer minFoodLevel = regionSet.queryValue(localPlayer, WGFlags.MIN_FOOD_LEVEL);
 		if (minFoodLevel == null) return;
 		if (event.getFoodLevel() >= minFoodLevel) return;
 

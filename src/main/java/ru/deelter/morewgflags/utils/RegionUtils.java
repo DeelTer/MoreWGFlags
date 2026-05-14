@@ -1,4 +1,4 @@
-package ru.deelter.moreWGFlags;
+package ru.deelter.morewgflags.utils;
 
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.WorldGuard;
