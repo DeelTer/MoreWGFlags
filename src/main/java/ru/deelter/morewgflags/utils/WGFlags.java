@@ -59,7 +59,7 @@ public class WGFlags {
 		));
 
 		PluginManager pluginManager = Bukkit.getPluginManager();
-		CHAT_FLAGS_ENABLED = pluginManager.getPlugin("DChat") != null;
+		CHAT_FLAGS_ENABLED = pluginManager.getPlugin("BetterChat") != null;
 
 		if (CHAT_FLAGS_ENABLED) {
 			registry.registerAll(List.of(
