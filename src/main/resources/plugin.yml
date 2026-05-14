@@ -1,0 +1,10 @@
+name: MoreWGFlags
+prefix: MoreWGFlags
+version: '${version}'
+
+main: ru.deelter.moreWGFlags.MoreWGFlags
+api-version: '26.1.2'
+load: POSTWORLD
+
+authors: [ DeelTer ]
+website: https://deelter.ru
