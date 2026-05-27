@@ -20,6 +20,7 @@ import ru.deelter.morewgflags.utils.WGFlags;
 public class VRFlagListener implements Listener {
 
     private static final Component VR_ONLY_MESSAGE = Component.text("VR ONLY", NamedTextColor.RED);
+    private static final Component PC_ONLY_MESSAGE = Component.text("PC ONLY", NamedTextColor.RED);
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onMove(@NonNull PlayerMoveEvent event) {
@@ -30,18 +31,22 @@ public class VRFlagListener implements Listener {
         if (regionSet == null) return;
 
         LocalPlayer localPlayer = WorldGuardPlugin.inst().wrapPlayer(player);
-        if (regionSet.queryState(localPlayer, WGFlags.VR_ONLY) != StateFlag.State.ALLOW) return;
+        StateFlag.State state = regionSet.queryState(localPlayer, WGFlags.VR_ONLY);
 
-        if (VRAPI.instance().isVRPlayer(player)) return;
+        boolean isVR = VRAPI.instance().isVRPlayer(player);
+
+        if (state == StateFlag.State.ALLOW && isVR) return;
+        if (state == StateFlag.State.DENY && !isVR) return;
+        if (state == null) return;
 
         event.setCancelled(true);
-        player.sendActionBar(VR_ONLY_MESSAGE);
+        player.sendActionBar(isVR ? PC_ONLY_MESSAGE : VR_ONLY_MESSAGE);
 
         Vector push = event.getFrom().toVector()
                 .subtract(event.getTo().toVector())
                 .normalize()
-                .multiply(0.4);
-        push.setY(0.1);
+                .multiply(1.2);
+        push.setY(0.2);
         player.setVelocity(push);
     }
 }
