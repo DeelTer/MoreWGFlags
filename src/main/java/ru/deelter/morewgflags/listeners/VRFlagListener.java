@@ -45,7 +45,7 @@ public class VRFlagListener implements Listener {
         Vector push = event.getFrom().toVector()
                 .subtract(event.getTo().toVector())
                 .normalize()
-                .multiply(0.5);
+                .multiply(0.4);
         push.setY(0.2);
 
         Bukkit.getScheduler().scheduleSyncDelayedTask(MoreWGFlags.getInstance(), () -> player.setVelocity(push));
