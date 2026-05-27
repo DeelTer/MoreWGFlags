@@ -10,4 +10,4 @@ authors: [ DeelTer ]
 website: https://deelter.ru
 
 depend: [ WorldGuard ]
-softdepend: [ BetterChat ]
+softdepend: [ BetterChat, WorldGuardExtraFlagsPlus, Vivecraft-Spigot-Extension ]

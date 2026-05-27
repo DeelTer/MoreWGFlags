@@ -7,6 +7,7 @@ repositories {
     mavenCentral()
     maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://maven.enginehub.org/repo/")
+    maven("https://repo.vivecraft.org/releases")
 }
 
 dependencies {
@@ -22,6 +23,7 @@ dependencies {
         exclude(group = "com.google.code.gson")
         exclude(group = "it.unimi.dsi")
     }
+    compileOnly(files("libs/Vivecraft-Spigot-Extension-1.3.7-1.jar"))
 
     compileOnly("org.projectlombok:lombok:1.18.36")
     annotationProcessor("org.projectlombok:lombok:1.18.36")

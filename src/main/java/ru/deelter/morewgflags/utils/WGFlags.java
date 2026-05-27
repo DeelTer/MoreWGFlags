@@ -10,10 +10,12 @@ import ru.deelter.chat.config.ChatConfig;
 import ru.deelter.morewgflags.link.WGChatProcessor;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class WGFlags {
 
 	public static final boolean CHAT_FLAGS_ENABLED;
+	public static final boolean VR_FLAG_ENABLED;
 	public static final StringFlag CHAT_ZONE_NAME;
 	public static final StringFlag CHAT_FORMAT;
 	public static final DoubleFlag CHAT_RADIUS;
@@ -27,6 +29,7 @@ public class WGFlags {
 	public static final StateFlag LECTERN_TAKE;
 	public static final StateFlag SIMPLE_BLOCK_BREAK;
 	public static final StateFlag SIMPLE_BLOCK_PLACE;
+	public static final StateFlag VR_ONLY;
 
 	static {
 		CHAT_ZONE_NAME = new StringFlag("chat-zone-name");
@@ -42,10 +45,10 @@ public class WGFlags {
 		SIMPLE_BLOCK_BREAK = new StateFlag("block-break-simple", false);
 		SIMPLE_BLOCK_PLACE = new StateFlag("block-place-simple", false);
 		MIN_FOOD_LEVEL = new IntegerFlag("min-food-level", RegionGroup.ALL);
-
+		VR_ONLY = new StateFlag("vr-only", false);
 
 		FlagRegistry registry = WorldGuard.getInstance().getFlagRegistry();
-		registry.registerAll(List.of(
+		registerIfAbsent(registry, List.of(
 				KEEP_INVENTORY,
 				PVP_DAMAGE,
 				SIGN_CHANGE,
@@ -62,12 +65,27 @@ public class WGFlags {
 		CHAT_FLAGS_ENABLED = pluginManager.getPlugin("BetterChat") != null;
 
 		if (CHAT_FLAGS_ENABLED) {
-			registry.registerAll(List.of(
+			registerIfAbsent(registry, List.of(
 					CHAT_ZONE_NAME,
 					CHAT_RADIUS,
 					CHAT_FORMAT
 			));
 			BetterChat.getInstance().getManager().register(new WGChatProcessor(10));
+		}
+
+		VR_FLAG_ENABLED = pluginManager.getPlugin("Vivecraft-Spigot-Extension") != null;
+
+		if (VR_FLAG_ENABLED) {
+			registerIfAbsent(registry, List.of(VR_ONLY));
+		}
+	}
+
+	private static void registerIfAbsent(FlagRegistry registry, List<Flag<?>> flags) {
+		List<Flag<?>> toRegister = flags.stream()
+				.filter(f -> registry.get(f.getName()) == null)
+				.collect(Collectors.toList());
+		if (!toRegister.isEmpty()) {
+			registry.registerAll(toRegister);
 		}
 	}
 

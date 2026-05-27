@@ -6,6 +6,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.deelter.morewgflags.listeners.BlockFlagsListener;
 import ru.deelter.morewgflags.listeners.OtherFlagsListener;
+import ru.deelter.morewgflags.listeners.VRFlagListener;
 import ru.deelter.morewgflags.utils.WGFlags;
 
 public final class MoreWGFlags extends JavaPlugin {
@@ -32,6 +33,9 @@ public final class MoreWGFlags extends JavaPlugin {
 		PluginManager manager = Bukkit.getPluginManager();
 		manager.registerEvents(new BlockFlagsListener(), this);
 		manager.registerEvents(new OtherFlagsListener(), this);
+		if (WGFlags.VR_FLAG_ENABLED) {
+			manager.registerEvents(new VRFlagListener(), this);
+		}
 	}
 
 	@Override
