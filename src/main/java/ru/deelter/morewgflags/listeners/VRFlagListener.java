@@ -33,11 +33,15 @@ public class VRFlagListener implements Listener {
         Player player = event.getPlayer();
         if (player.getGameMode() == GameMode.SPECTATOR) return;
 
-        StateFlag.State state = getVrFlagState(player, event.getTo());
-        if (state == null) return;
+        StateFlag.State stateTo = getVrFlagState(player, event.getTo());
+        if (stateTo == null) return;
 
         boolean isVR = VRAPI.instance().isVRPlayer(player);
-        if (isAllowed(state, isVR)) return;
+        if (isAllowed(stateTo, isVR)) return;
+
+        // Allow movement if already inside a restricted region (let them walk around/exit)
+        StateFlag.State stateFrom = getVrFlagState(player, event.getFrom());
+        if (stateFrom == stateTo) return;
 
         event.setCancelled(true);
         player.sendActionBar(isVR ? PC_ONLY_MESSAGE : VR_ONLY_MESSAGE);
